@@ -1,0 +1,52 @@
+{
+    "name": "webuni/symfony-extensions",
+    "description": "Symfony extensions",
+    "type": "library",
+    "require": {
+        "php": "^7.1",
+        "doctrine/orm": "^2.5"
+    },
+    "require-dev": {
+        "symfony/http-kernel": "^3.0|^4.0|^5.0",
+        "symfony/form": "^3.0|^4.0|^5.0",
+        "symfony/translation": "^3.0|^4.0|^5.0",
+        "symfony/validator": "^3.0|^4.0|^5.0",
+        "symfony/var-dumper": "^3.0|^4.0|^5.0",
+        "symfony/dependency-injection": "^4.2|^5.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Martin Hasoň",
+            "email": "martin.hason@gmail.com"
+        },
+        {
+            "name": "Webuni s.r.o.",
+            "homepage": "https://www.webuni.cz"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Webuni\\SymfonyExtensions\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webuni\\SymfonyExtensions\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "cs": "./run cs",
+        "cs-check": "./run cs --dry-run",
+        "analyse": "./run analyse",
+        "tests": "./run tests"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
