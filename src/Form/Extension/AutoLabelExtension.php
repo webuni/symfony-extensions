@@ -44,7 +44,7 @@ final class AutoLabelExtension extends AbstractTypeExtension
         $view->vars['label'] = Inflector::tableize(implode('.', array_reverse($names)));
     }
 
-    public function getExtendedTypes(): array
+    public static function getExtendedTypes(): iterable
     {
         return [FormType::class];
     }
