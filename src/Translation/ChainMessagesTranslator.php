@@ -19,7 +19,21 @@ use Symfony\Component\Translation\TranslatorInterface as LegacyTranslatorInterfa
 use Symfony\Contracts\Translation\LocaleAwareInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class ChainMessagesTranslator implements LegacyTranslatorInterface, TranslatorInterface, TranslatorBagInterface
+if (class_exists(LegacyTranslatorInterface::class) && !class_exists(TranslatorInterface::class)) {
+    abstract class BaseChainMessagesTranslator implements LegacyTranslatorInterface, TranslatorBagInterface
+    {
+    }
+} elseif (class_exists(LegacyTranslatorInterface::class)) {
+    abstract class BaseChainMessagesTranslator implements LegacyTranslatorInterface, TranslatorInterface, TranslatorBagInterface
+    {
+    }
+} else {
+    abstract class BaseChainMessagesTranslator implements TranslatorInterface, LocaleAwareInterface, TranslatorBagInterface
+    {
+    }
+}
+
+class ChainMessagesTranslator extends BaseChainMessagesTranslator
 {
     private $translator;
 
@@ -29,9 +43,10 @@ class ChainMessagesTranslator implements LegacyTranslatorInterface, TranslatorIn
     }
 
     /**
+     * @inheritdoc
      * @param string|object $id
      */
-    public function trans($id, array $parameters = [], $domain = null, $locale = null)
+    public function trans($id, array $parameters = [], string $domain = null, string $locale = null)
     {
         if ($id instanceof ChainMessages) {
             return $this->transChain($id, $parameters, $domain, $locale);
@@ -41,6 +56,7 @@ class ChainMessagesTranslator implements LegacyTranslatorInterface, TranslatorIn
     }
 
     /**
+     * @inheritDoc
      * @param string|object $id
      */
     public function transChoice($id, $number, array $parameters = [], $domain = null, $locale = null)
@@ -64,7 +80,7 @@ class ChainMessagesTranslator implements LegacyTranslatorInterface, TranslatorIn
         return $this->translator->getLocale();
     }
 
-    public function getCatalogue($locale = null)
+    public function getCatalogue(string $locale = null)
     {
         if ($this->translator instanceof TranslatorBagInterface) {
             return $this->translator->getCatalogue($locale);
