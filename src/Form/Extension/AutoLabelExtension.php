@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Webuni\SymfonyExtensions\Form\Extension;
 
 use Doctrine\Common\Inflector\Inflector;
+use Doctrine\Inflector\InflectorFactory;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
@@ -23,6 +24,13 @@ use Symfony\Component\Form\Util\StringUtil;
 
 final class AutoLabelExtension extends AbstractTypeExtension
 {
+    private $inflector;
+
+    public function __construct()
+    {
+        $this->inflector = class_exists(InflectorFactory::class) ? InflectorFactory::create()->build() : new Inflector();
+    }
+
     public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         if (isset($options['label']) || isset($options['label_format'])) {
@@ -41,7 +49,7 @@ final class AutoLabelExtension extends AbstractTypeExtension
             $names[] = $actualView->vars['name'];
         } while (($actualView = $actualView->parent) && ($actualForm = $actualForm->getParent()));
 
-        $view->vars['label'] = Inflector::tableize(implode('.', array_reverse($names)));
+        $view->vars['label'] = $this->inflector->tableize(implode('.', array_reverse($names)));
     }
 
     public static function getExtendedTypes(): iterable
