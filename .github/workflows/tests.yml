@@ -19,7 +19,7 @@ jobs:
       - name: Require Symfony ${{ matrix.symfony }}
         env:
           SYMFONY_VERSION: ${{ matrix.symfony }}
-        run: ./run composer require "symfony/symfony:$SYMFONY_VERSION"
+        run: ./run composer require "symfony/symfony:$SYMFONY_VERSION" --no-update
       - name: Install dependencies
         env:
           PHP_VERSION: ${{ matrix.php }}
