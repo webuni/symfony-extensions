@@ -17,7 +17,6 @@ return PhpCsFixer\Config::create()
         '@Symfony' => true,
         '@PHP71Migration:risky' => true,
         '@Symfony:risky' => true,
-        '@PHPUnit60Migration:risky' => true,
         'array_syntax' => ['syntax' => 'short'],
         'header_comment' => [
             'header' => $header,

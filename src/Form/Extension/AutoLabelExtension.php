@@ -21,9 +21,12 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\Util\StringUtil;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class AutoLabelExtension extends AbstractTypeExtension
 {
+    public const AUTO_LABEL_STOP_ON_DATA_CLASS = 'auto_label_stop_on_data_class';
+
     private $inflector;
 
     public function __construct()
@@ -41,15 +44,29 @@ final class AutoLabelExtension extends AbstractTypeExtension
         $actualForm = $form;
         $names = [];
         do {
-            $class = $actualForm->getConfig()->getDataClass();
+            $config = $actualForm->getConfig();
+            $class = $config->getDataClass();
             if (null !== $class) {
                 $names[] = StringUtil::fqcnToBlockPrefix($class);
-                break;
+                if ($config->getOption(self::AUTO_LABEL_STOP_ON_DATA_CLASS, true)) {
+                    break;
+                }
+            } elseif (isset($actualView->vars['name'])) {
+                $names[] = $actualView->vars['name'];
             }
-            $names[] = $actualView->vars['name'];
         } while (($actualView = $actualView->parent) && ($actualForm = $actualForm->getParent()));
 
-        $view->vars['label'] = $this->inflector->tableize(implode('.', array_reverse($names)));
+        if (!empty($names)) {
+            $view->vars['label'] = $this->inflector->tableize(implode('.', array_reverse($names)));
+        }
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            self::AUTO_LABEL_STOP_ON_DATA_CLASS => true,
+        ]);
+        $resolver->setAllowedTypes(self::AUTO_LABEL_STOP_ON_DATA_CLASS, 'bool');
     }
 
     public static function getExtendedTypes(): iterable

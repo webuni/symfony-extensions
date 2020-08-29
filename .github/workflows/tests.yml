@@ -1,0 +1,31 @@
+name: Tests
+
+on:
+  push: ~
+  pull_request: ~
+
+jobs:
+  phpunit:
+    name: PHPUnit on ${{ matrix.php }} and Symfony ${{ matrix.symfony }} (${{ matrix.deps_strategy }} dependencies)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        deps_strategy: [ latest, lowest ]
+        php: [ 7.2, 7.3, 7.4 ]
+        symfony: [ 3.*, 4.*, 5.* ]
+    steps:
+      - name: Update code
+        uses: actions/checkout@v2
+      - name: Require Symfony ${{ matrix.symfony }}
+        env:
+          SYMFONY_VERSION: ${{ matrix.symfony }}
+        run: ./run composer require "symfony/symfony:$SYMFONY_VERSION"
+      - name: Install dependencies
+        env:
+          PHP_VERSION: ${{ matrix.php }}
+          DEPS_STRATEGY: ${{ matrix.deps_strategy }}
+        run: ./run deps:$DEPS_STRATEGY
+      - name: Run tests
+        env:
+          PHP_VERSION: ${{ matrix.php }}
+        run: ./run tests
