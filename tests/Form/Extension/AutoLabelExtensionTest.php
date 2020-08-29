@@ -22,6 +22,7 @@ class AutoLabelExtensionTest extends TestCase
 
     public function testExtendsForm()
     {
+        $this->assertEquals(FormType::class, $this->extension->getExtendedType()); // Symfony 3
         $this->assertEquals([FormType::class], AutoLabelExtension::getExtendedTypes());
     }
 

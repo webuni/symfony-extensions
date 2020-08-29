@@ -69,6 +69,11 @@ final class AutoLabelExtension extends AbstractTypeExtension
         $resolver->setAllowedTypes(self::AUTO_LABEL_STOP_ON_DATA_CLASS, 'bool');
     }
 
+    public function getExtendedType(): string
+    {
+        return FormType::class;
+    }
+
     public static function getExtendedTypes(): iterable
     {
         return [FormType::class];
